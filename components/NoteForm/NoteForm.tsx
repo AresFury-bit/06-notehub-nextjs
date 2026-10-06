@@ -9,17 +9,19 @@ interface NoteFormProps {
   onClose: () => void;
 }
 
-export interface OrderFormValue {
+export interface NoteFormValues {
   title: string;
   content: string;
   tag: NoteTag;
 }
 
-const initialValues: OrderFormValue = {
+const initialValues: NoteFormValues = {
   title: "",
   content: "",
   tag: "Todo",
 };
+
+const noteTags: NoteTag[] = ["Todo", "Work", "Personal", "Meeting", "Shopping"];
 
 const OrderFormSchema = Yup.object().shape({
   title: Yup.string()
@@ -27,20 +29,20 @@ const OrderFormSchema = Yup.object().shape({
     .required()
     .max(50, "Title is too long"),
   content: Yup.string().max(500, "Content is too long"),
-  tag: Yup.string<NoteTag>().required(),
+  tag: Yup.mixed<NoteTag>().oneOf(noteTags).required(),
 });
 
 export const NoteForm = ({ onClose }: NoteFormProps) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: (newNote: OrderFormValue) => createNote(newNote),
+    mutationFn: (newNote: NoteFormValues) => createNote(newNote),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
       onClose();
     },
   });
 
-  const handleSubmitForm = (values: OrderFormValue) => {
+  const handleSubmitForm = (values: NoteFormValues) => {
     console.log(values);
     mutation.mutate({
       title: values.title,
@@ -98,8 +100,12 @@ export const NoteForm = ({ onClose }: NoteFormProps) => {
           >
             Cancel
           </button>
-          <button type="submit" className={css.submitButton} disabled={false}>
-            Create note
+          <button
+            type="submit"
+            className={css.submitButton}
+            disabled={mutation.isPending}
+          >
+            {mutation.isPending ? "Creating..." : "Create note"}
           </button>
         </div>
       </Form>

@@ -4,5 +4,5 @@ interface Props {
 }
 
 export default function Error({ error }: Props) {
-  <p>Could not fetch the list of notes. {error.message}</p>;
+  return <p>Could not fetch the list of notes. {error.message}</p>;
 }

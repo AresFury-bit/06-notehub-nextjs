@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { fetchNotes } from "@/lib/api";
 import NoteList from "@/components/NoteList/NoteList";
 import { useState } from "react";
@@ -24,6 +24,7 @@ const NotesClient = ({ initialPage, initialSearch }: NotesClientesProps) => {
   const { data: note } = useQuery({
     queryKey: ["notes", page, search],
     queryFn: () => fetchNotes(page, search),
+    placeholderData: keepPreviousData,
     refetchOnMount: false,
   });
 

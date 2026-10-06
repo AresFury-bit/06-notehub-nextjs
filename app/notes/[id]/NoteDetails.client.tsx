@@ -25,7 +25,7 @@ export default function NoteDetailsClient() {
   }
 
   const formattedDate = note?.updatedAt
-    ? `Updated at: ${note.createdAt}`
+    ? `Updated at: ${note.updatedAt}`
     : `Created at: ${note?.createdAt}`;
 
   return (
